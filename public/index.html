@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>העלאת והצגת CSV</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>העלאת והצגת CSV</h1>
+
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".csv" required>
+    <button type="submit">העלאת CSV</button>
+  </form>
+
+  <div id="message"></div>
+
+  <h2>טבלת נתונים</h2>
+  <table id="dataTable">
+    <thead>
+      <tr>
+      <th>שם נציג</th>
+      <th>שם לקוח</th>
+      <th>מתי חזר מזכאות</th>
+      <th>נסגר / לא נסגר</th>
+      
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      try {
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.text();
+        document.getElementById('message').textContent = result;
+        fetchData();
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('message').textContent = 'אירעה שגיאה במהלך ההעלאה.';
+      }
+    });
+
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        const tbody = document.querySelector('#dataTable tbody');
+        tbody.innerHTML = '';
+        data.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+                        <td>${row['שם נציג'] || ''}</td>
+                        <td>${row['שם לקוח'] || ''}</td>
+                        <td>${row['מתי חזר מזכאות'] || ''}</td>
+                        <td>${row['נסגר / לא נסגר'] || ''}</td>
+                      `;
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('message').textContent = 'אירעה שגיאה בעת אחזור הנתונים.';
+      }
+    }
+    fetchData();
+  </script>
+</body>
+
+</html>

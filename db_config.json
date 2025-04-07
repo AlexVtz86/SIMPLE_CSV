@@ -1,0 +1,15 @@
+ {
+ "tableName": "yarokale_report",
+  "columns": [
+    { "name": "שם_נציג", "type": "VARCHAR(255)" },
+    { "name": "שם_לקוח", "type": "VARCHAR(255)" },
+    { "name": "מתי_חזר_מזכאות", "type": "TIMESTAMP" }
+  
+  ],
+  "originalNames": [
+    "שם_נציג",
+    "שם_לקוח",
+    "מתי חזר מזכאות"
+  ]
+}
+
